@@ -92,7 +92,7 @@ private:
     }
 
     void HandleEdit(const std::string& filename) {
-    // Zaktualizuj listę plików w folderze serwera
+    // Zaktualizuj listę plików w folderze serwera (domyślnie zakładam, że masz funkcję UpdateFileList())
     std::vector<std::string> availableFiles = UpdateFileList();
 
     // Sprawdź, czy wymagany plik znajduje się w dostępnych plikach
@@ -116,7 +116,7 @@ private:
             readCallback = [this, filename, &newContent, &readCallback](const std::string& content) {
                 cout << "Reading from client: " << content << endl;
 
-                if (content.find("ENDED_EDITING") != std::string::npos)  {
+                if (content == "ENDED_EDITING\n") {
                     cout << "Client ended editing" << endl;
                 } else if (content != files_[filename] && content != "") {
                     cout << "Updating file content on server" << endl;
@@ -131,22 +131,20 @@ private:
                         file << content;
                         cout << "Content written to file: " << content << endl;
                         file.close();
-                        cout << 0 << endl;
-                        // Tutaj możesz dodać kod do informowania klientów o aktualizacji zawartości pliku
-                        // BroadcastFileUpdate(filename);
-
-                        // Ponownie uruchom odczyt asynchroniczny
-                        DoReadContent(readCallback);
                     }
+
+                    // Tutaj możesz dodać kod do informowania klientów o aktualizacji zawartości pliku
+                    BroadcastFileUpdate(filename);
                 }
+
+                // Ponownie uruchom odczyt asynchroniczny
+                // DoReadContent(readCallback);
             };
 
-            // Nie rozpoczynaj odczytu asynchronicznego tutaj, ale zrób to po zapisie pliku
-            // DoReadContent(readCallback);
+            // Rozpocznij pierwszy odczyt asynchroniczny
+            DoReadContent(readCallback);
 
             cout << "After while" << endl;
-            DoRead();/////// to jest watpliwe
-            //return;
         } else {
             cout << "Błąd: nieznaleziono pliku '" << filename << "' w kontenerze serwera" << endl;
             // DoWrite("File '" + filename + "' not found\n");
@@ -158,6 +156,7 @@ private:
         DoRead();
     }
 }
+
 
 void DoReadContent(std::function<void(const std::string&)> callback) {
     auto self(shared_from_this());
