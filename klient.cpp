@@ -25,23 +25,6 @@ void SendFileContent(tcp::socket& socket, const std::string& filename) {
     cout<<"sending: "<<fileContent<<endl;
 }
 
-/*void ReceiveFileContent(tcp::socket& socket, std::function<void(const std::string&)> callback) {
-    auto buffer = std::make_shared<boost::asio::streambuf>();
-
-    boost::asio::async_read_until(socket, *buffer, '\n',
-        [buffer, callback](const boost::system::error_code& ec, std::size_t length) {
-            if (!ec) {
-                std::istream response_stream(buffer.get());
-                std::string content;
-                std::getline(response_stream, content);
-                callback(content);
-            } else {
-                std::cerr << "Error receiving content: " << ec.message() << std::endl;
-            }
-        });
-}*/
-
-
 void ReceiveFileContent(tcp::socket& socket, std::string& content) {
     boost::asio::streambuf buffer;
     boost::asio::read_until(socket, buffer, ">\n");
