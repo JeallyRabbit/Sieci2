@@ -38,7 +38,7 @@ public:
             struct dirent* entry;
             while ((entry = readdir(dir)) != nullptr) {
                 if (entry->d_type == DT_REG) {
-                    // Dodajemy do listy tylko pliki tekstowe (możesz dostosować warunki)
+                    // Dodajemy do listy tylko pliki tekstowe
                     std::string filename(entry->d_name);
                     if (filename.size() > 4 && filename.substr(filename.size() - 4) == ".txt") {
                         files.push_back(filename);
@@ -92,10 +92,10 @@ private:
     }
 
     void HandleEdit(const std::string& filename) {
-    // Zaktualizuj listę plików w folderze serwera (domyślnie zakładam, że masz funkcję UpdateFileList())
+    // Zaktualizuj listę plików w folderze serwera 
     std::vector<std::string> availableFiles = UpdateFileList();
 
-    // Sprawdź, czy wymagany plik znajduje się w dostępnych plikach
+    // Sprawdz, czy wymagany plik znajduje się w dostępnych plikach
     auto fileIt = std::find(availableFiles.begin(), availableFiles.end(), filename);
 
     if (fileIt != availableFiles.end()) {
@@ -133,7 +133,7 @@ private:
                         file.close();
                     }
 
-                    // Tutaj możesz dodać kod do informowania klientów o aktualizacji zawartości pliku
+                    // Poinformuj klientow o zmianie zawartosci pliku
                     BroadcastFileUpdate(filename);
                 }
 
@@ -147,12 +147,12 @@ private:
             cout << "After while" << endl;
         } else {
             cout << "Błąd: nieznaleziono pliku '" << filename << "' w kontenerze serwera" << endl;
-            // DoWrite("File '" + filename + "' not found\n");
+            
             DoRead();
         }
     } else {
         cout << "Błąd: plik '" << filename << "' nie jest dostępny w folderze serwera" << endl;
-        // DoWrite("File '" + filename + "' is not available on the server\n");
+        
         DoRead();
     }
 }
@@ -168,7 +168,7 @@ void DoReadContent(std::function<void(const std::string&)> callback) {
                 std::getline(is, content);
                 std::cout << "Successfully read: " << content << std::endl;
 
-                // Przekazujemy odczytaną zawartość do funkcji zwrotnej
+                // Przekaz odczytaną zawartość do funkcji zwrotnej
                 callback(content);
             } else {
                 std::cout << "Error reading" << std::endl;
