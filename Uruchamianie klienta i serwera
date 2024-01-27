@@ -1,0 +1,8 @@
+
+serwer:
+g++ -std=c++11 -o serwer serwer.cpp -lboost_system -lpthread && ./serwer
+
+
+klient:
+g++ -std=c++11 -o klient klient.cpp -lboost_thread -lboost_system -lpthread && ./klient
+
